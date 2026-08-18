@@ -25,3 +25,7 @@ The Fake Indian Currency Detection project is a web application that helps users
 - Python 3.11
 - pip (Python package installer)
 - Virtual environment (optional but recommended)
+
+##Link:
+
+https://web-production-cc578.up.railway.app/
