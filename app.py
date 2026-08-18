@@ -5,6 +5,11 @@ from currency_converter import CurrencyConverter
 import numpy as np
 import os
 import urllib.request
+import tensorflow as tf
+
+# Suppress TensorFlow logging to reduce memory usage
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+tf.get_logger().setLevel('ERROR')
 
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -70,17 +75,24 @@ def download_models():
         else:
             print(f"✓ {model_name} already exists")
 
-# Download models on startup
+# Download models on startup (but don't load them yet to save memory)
 download_models()
 
-# Load currency detection models
-model_500 = load_model('Models/model_500.h5')
-model_200 = load_model('Models/model_200.h5')
-model_100 = load_model('Models/model_100.h5')
+# Cache for loaded models (lazy loading)
+model_cache = {}
 
+def get_model(denomination):
+    """Load model on-demand to save memory (lazy loading)"""
+    if denomination not in model_cache:
+        model_path = f'Models/model_{denomination}.h5'
+        print(f"Loading model_{denomination}.h5...")
+        model_cache[denomination] = load_model(model_path)
+        print(f"✓ model_{denomination}.h5 loaded")
+    return model_cache[denomination]
 
-# Function to detect currency using the specified model
-def detect_currency(img_path, model):
+# Function to detect currency using the specified denomination
+def detect_currency(img_path, denomination):
+    model = get_model(denomination)
     img = image.load_img(img_path, target_size=(224, 224))
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
@@ -142,18 +154,12 @@ def detect():
             file_path = os.path.join(upload_dir, file.filename)
             file.save(file_path)
 
-            # Determine which model to use based on selected denomination
-            if denomination == '500':
-                model = model_500
-            elif denomination == '200':
-                model = model_200
-            elif denomination == '100':
-                model = model_100
-            else:
+            # Validate denomination
+            if denomination not in ['100', '200', '500']:
                 return render_template('detect.html', message='Invalid denomination selected')
 
             # Perform currency detection
-            is_fake = detect_currency(file_path, model)
+            is_fake = detect_currency(file_path, denomination)
             # os.remove(file_path)
 
             # Determine prediction result
