@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: currency-detection
-    runtime: python-3.11
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
