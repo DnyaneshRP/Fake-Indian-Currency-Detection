@@ -4,6 +4,7 @@ from tensorflow.keras.preprocessing import image
 from currency_converter import CurrencyConverter
 import numpy as np
 import os
+import urllib.request
 
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -45,6 +46,32 @@ def convert():
 def authenticate_user(username, password):
     return username == 'admin' and password == 'admin'
 
+
+# Download models from GitHub Releases if not present
+MODELS_DIR = 'Models'
+os.makedirs(MODELS_DIR, exist_ok=True)
+
+MODEL_URLS = {
+    'model_500.h5': 'https://github.com/DnyaneshRP/Fake-Indian-Currency-Detection/releases/download/v1.0.0/model_500.h5',
+    'model_200.h5': 'https://github.com/DnyaneshRP/Fake-Indian-Currency-Detection/releases/download/v1.0.0/model_200.h5',
+    'model_100.h5': 'https://github.com/DnyaneshRP/Fake-Indian-Currency-Detection/releases/download/v1.0.0/model_100.h5',
+}
+
+def download_models():
+    for model_name, url in MODEL_URLS.items():
+        model_path = os.path.join(MODELS_DIR, model_name)
+        if not os.path.exists(model_path):
+            print(f"Downloading {model_name}...")
+            try:
+                urllib.request.urlretrieve(url, model_path)
+                print(f"✓ {model_name} downloaded successfully")
+            except Exception as e:
+                print(f"✗ Error downloading {model_name}: {str(e)}")
+        else:
+            print(f"✓ {model_name} already exists")
+
+# Download models on startup
+download_models()
 
 # Load currency detection models
 model_500 = load_model('Models/model_500.h5')
