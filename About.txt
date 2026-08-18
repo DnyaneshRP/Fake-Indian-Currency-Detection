@@ -1,0 +1,17 @@
+Fake Currency Detection Using CNN
+
+Under the Guidance of
+
+Prof. Mr. V. B. Kamble
+
+Submitted By
+
+Mr. Shubham Kute		214040
+Mr. Harsh Patil			214043
+Mr. Dnyanesh Patil		214049
+
+Department of Computer Engineering
+Cusrow Wadia Institute of Technology, 
+Pune – 411001
+
+(2023-2024)
