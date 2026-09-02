@@ -29,3 +29,5 @@ The Fake Indian Currency Detection project is a web application that helps users
 ## Link:
 
 https://web-production-cc578.up.railway.app/
+
+**Username & Password: admin**
