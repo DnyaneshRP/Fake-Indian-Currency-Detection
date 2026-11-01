@@ -28,6 +28,6 @@ The Fake Indian Currency Detection project is a web application that helps users
 
 ## Link:
 
-https://web-production-b720c.up.railway.app/
+**https://web-production-b720c.up.railway.app/**
 
 **Username & Password: admin**
